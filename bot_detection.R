@@ -1,5 +1,5 @@
 # ==========================================
-# 📦 LIBRARIES
+# LIBRARIES
 # ==========================================
 library(tidyverse)
 library(caret)
@@ -8,12 +8,12 @@ library(text2vec)
 library(stringr)
 
 # ==========================================
-# 📂 LOAD DATA (ORIGINAL SAFE)
+# LOAD DATA
 # ==========================================
 data <- read.csv("dataset.csv", stringsAsFactors = FALSE)
 
 # ==========================================
-# 🔥 DATA IMPROVEMENT (IMPORTANT STEP)
+# DATA IMPROVEMENT 
 # ==========================================
 set.seed(42)
 
@@ -65,7 +65,7 @@ data$Mention.Count <- as.numeric(data$Mention.Count)
 data$Follower.Count <- as.numeric(data$Follower.Count)
 
 # ==========================================
-# 🧠 NUMERIC FEATURES
+# NUMERIC FEATURES
 # ==========================================
 data$Follower_Log <- log1p(data$Follower.Count)
 
@@ -74,7 +74,7 @@ data$Engagement_Ratio <- (data$Retweet.Count + 1) / (data$Follower.Count + 1)
 data$Mention_Ratio <- data$Mention.Count / (data$Follower.Count + 1)
 
 # ==========================================
-# 🔤 TEXT FEATURES
+# TEXT FEATURES
 # ==========================================
 tokens <- word_tokenizer(data$Tweet)
 
@@ -92,7 +92,7 @@ tfidf <- TfIdf$new()
 tfidf_matrix <- fit_transform(dtm, tfidf)
 
 # ==========================================
-# 🔗 COMBINE FEATURES
+# COMBINE FEATURES
 # ==========================================
 numeric_features <- data %>%
   select(
@@ -111,7 +111,7 @@ final_data[is.na(final_data)] <- 0
 target <- as.factor(data$Bot.Label)
 
 # ==========================================
-# 🔀 TRAIN TEST SPLIT
+# TRAIN TEST SPLIT
 # ==========================================
 set.seed(123)
 
@@ -124,7 +124,7 @@ y_train <- target[train_index]
 y_test  <- target[-train_index]
 
 # ==========================================
-# 🌲 MODEL
+# MODEL
 # ==========================================
 train_df <- data.frame(X_train)
 train_df$y <- y_train
@@ -141,13 +141,13 @@ rf_model <- ranger(
 )
 
 # ==========================================
-# 🎯 PREDICTION
+# PREDICTION
 # ==========================================
 rf_pred <- predict(rf_model, data = test_df)$predictions
 rf_pred <- as.factor(rf_pred)
 
 # ==========================================
-# 📊 RESULT
+# RESULT
 # ==========================================
 cat("Final Model Results:\n")
 confusionMatrix(rf_pred, y_test)
